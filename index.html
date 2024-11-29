@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Custom Name Wheel</title>
+        <title>Christmas Craft Prize Wheel</title>
         <style>
             * {
                 margin: 0;
@@ -18,8 +18,31 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: flex-start;
-                font-family: Arial, sans-serif;
+                font-family: "Comic Sans MS", sans-serif;
+                background: linear-gradient(
+                    to bottom,
+                    #ffecd2,
+                    #fcb69f
+                ); /* Warm festive gradient */
+                background-image: url("background.jpg"),
+                    linear-gradient(to bottom, #ffecd2, #fcb69f);
+                color: #fff;
+                text-shadow: 1px 1px 2px #000;
+                background-size: cover; /* Scale to cover the entire background */
+                background-repeat: no-repeat; /* Prevent tiling */
+                background-position: center center; /* Center the image */
+                background-attachment: fixed; /* Keep the background fixed during scrolling */
             }
+
+            /* body,
+            html {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                font-family: Arial, sans-serif;
+            } */
 
             /* Controls Section (fixed at the top) */
             .controls {
@@ -52,7 +75,7 @@
                 ); /* Subtract the height of controls */
                 display: block;
                 margin-top: 20px;
-                border: 1px solid black;
+                /* border: 1px solid black; */
             }
 
             /* Result and Countdown */
@@ -154,14 +177,24 @@
                 return namesArray;
             }
 
-            // Function to generate a random color
+            // Function to generate a random vibrant yet soft Christmas color
             function getRandomColor() {
-                const letters = "0123456789ABCDEF";
-                let color = "#";
-                for (let i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
+                const christmasColors = [
+                    "#FF6F61", // Warm red
+                    "#8BC34A", // Fresh green
+                    "#FFD700", // Gold
+                    "#FFB74D", // Orange-gold
+                    "#64B5F6", // Icy blue
+                    "#E57373", // Rosy red
+                ];
+                return christmasColors[
+                    Math.floor(Math.random() * christmasColors.length)
+                ];
+            }
+
+            // Function to alternate between red and white for a candy cane look
+            function getCandyCaneColor(index) {
+                return index % 2 === 0 ? "#FF0000" : "#FFFFFF"; // Red for even, White for odd
             }
 
             // Function to draw the wheel based on the provided names
@@ -179,7 +212,10 @@
                     const endAngle = startAngle + arcSize;
 
                     // Set color for each segment using random colors
-                    ctx.fillStyle = colors[index];
+                    // ctx.fillStyle = colors[index];
+                    // Use alternating red and white colors for the segments
+                    const segmentColor = getCandyCaneColor(index);
+                    ctx.fillStyle = segmentColor;
 
                     // Draw the segment
                     ctx.beginPath();
@@ -189,11 +225,14 @@
                     ctx.fill();
 
                     // Add the name text to the segment
+                    // Set text color based on the segment's background color
+                    const textColor =
+                        segmentColor === "#FFFFFF" ? "black" : "white";
                     ctx.save();
                     ctx.translate(radius, radius);
                     ctx.rotate((startAngle + endAngle) / 2);
                     ctx.textAlign = "right";
-                    ctx.fillStyle = "white";
+                    ctx.fillStyle = textColor;
                     ctx.font = "bold 28px sans-serif"; // Increase font size for bigger wheel
                     ctx.fillText(name, radius - 20, 10); // Adjust the position of the text
                     ctx.restore();
