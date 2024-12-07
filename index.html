@@ -35,7 +35,7 @@
 
             /* Controls Section (fixed at the top) */
             .controls {
-                width: 100%;
+                width: 100vw;
                 background-color: #f4f4f4;
                 padding: 20px;
                 text-align: center;
@@ -59,13 +59,13 @@
             /* Full-screen Canvas for the wheel */
             #wheelCanvas {
                 flex-grow: 1;
-                width: 100%;
+                /* width: 100%;
                 height: calc(
                     100vh - 180px
-                ); /* Subtract the height of controls */
+                ); /* Subtract the height of controls */ */
                 display: block;
-                /* margin-top: 20px; */
-                margin: 0 auto;
+                margin-top: 20px;
+                /* margin: 0 auto; */
                 /* border: 1px solid black; */
             }
 
@@ -86,12 +86,13 @@
     </head>
     <body>
         <!-- Controls Section -->
-        <div class="controls">
+        <div class="controls" id="controls">
             <label for="inputNames">Names</label>
             <input
                 type="text"
                 id="inputNames"
                 value="Karla, Michelle, Tracy, Annette, Cheri, Pattie, Hazel, Fernanda, Kim, Sue, Cynthia, Kayla, BJ, Carlene, Amber, Erin"
+                size="75"
             />
 
             <!-- Input for random spin duration -->
@@ -118,11 +119,11 @@
                 Spin the Wheel
             </button>
 
-            <span id="countdown-timer">0:00</span>
+            <span id="countdown-timer">0:00:00 PM</span>
         </div>
 
         <!-- Canvas for the wheel -->
-        <canvas id="wheelCanvas" height="1200" width="1200"></canvas>
+        <canvas id="wheelCanvas"></canvas>
 
         <!-- Countdown timer -->
         <div id="result"></div>
@@ -131,44 +132,38 @@
         <script>
             const canvas = document.getElementById("wheelCanvas");
             const ctx = canvas.getContext("2d");
-            const radius = canvas.width / 2;
+            let radius;
             let currentAngle = 0;
             let spinning = false;
 
-            // function resizeCavas() {
-            //     const size =
-            //         Math.min(window.innerWidth, window.innerHeight) - 180;
-            //     canvas.width = size;
-            //     canvas.height = size;
-            //     drawWheel();
-            // }
-            // window.addEventListener("resize", resizeCavas);
-            // window.addEventListener("load", () => {
-            //     resizeCavas();
-            //     drawWheel();
-            // });
+            function resizeCavas() {
+                // const controls = document.getElementById("controls").height;
+                const size =
+                    Math.min(window.innerWidth, window.innerHeight) - 150;
+                console.log(document.getElementById("wheelCanvas").height);
+                console.log(
+                    "Calculated:",
+                    size,
+                    "Inner W:",
+                    window.innerWidth,
+                    "Inner H:",
+                    window.innerHeight,
+                );
+                canvas.width = size;
+                canvas.height = size;
+                radius = canvas.width / 2 - 1;
+                drawWheel();
+            }
+            window.addEventListener("resize", resizeCavas);
+            window.addEventListener("load", () => {
+                resizeCavas();
+                drawWheel();
+            });
 
             // Get the input element
             let namesInput = document.getElementById("inputNames");
             let names = convertInputToArray(namesInput);
-            // let names = [
-            //     "John",
-            //     "Sarah",
-            //     "Mike",
-            //     "Lisa",
-            //     "Tom",
-            //     "Emma",
-            //     "James",
-            //     "Anna",
-            //     "David",
-            //     "Sophia",
-            //     "Mark",
-            //     "Rachel",
-            //     "Chris",
-            //     "Hannah",
-            //     "Luke",
-            //     "Olivia",
-            // ]; // 16 names
+
             let spinDuration;
             let angularVelocity = 0.005; // Slower initial speed
             let decelerationRate = 0.0000005;
