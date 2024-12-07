@@ -18,7 +18,7 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: flex-start;
-                font-family: "Comic Sans MS", sans-serif;
+                font-family: "Arial", sans-serif;
                 background: linear-gradient(
                     to bottom,
                     #ffecd2,
@@ -27,22 +27,11 @@
                 background-image: url("background.jpg"),
                     linear-gradient(to bottom, #ffecd2, #fcb69f);
                 color: #fff;
-                text-shadow: 1px 1px 2px #000;
                 background-size: cover; /* Scale to cover the entire background */
                 background-repeat: no-repeat; /* Prevent tiling */
                 background-position: center center; /* Center the image */
                 background-attachment: fixed; /* Keep the background fixed during scrolling */
             }
-
-            /* body,
-            html {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-start;
-                font-family: Arial, sans-serif;
-            } */
 
             /* Controls Section (fixed at the top) */
             .controls {
@@ -52,6 +41,7 @@
                 text-align: center;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                 z-index: 10;
+                color: black;
             }
 
             input,
@@ -74,7 +64,8 @@
                     100vh - 180px
                 ); /* Subtract the height of controls */
                 display: block;
-                margin-top: 20px;
+                /* margin-top: 20px; */
+                margin: 0 auto;
                 /* border: 1px solid black; */
             }
 
@@ -86,43 +77,53 @@
                 font-weight: bold;
             }
 
-            #countdown {
+            #countdown-timer {
                 font-size: 24px;
                 margin-top: 20px;
-                color: #ff3333;
+                color: #f4f4f4;
             }
         </style>
     </head>
     <body>
         <!-- Controls Section -->
         <div class="controls">
-            <h2>Customizable Spinning Wheel with Names</h2>
-
             <label for="inputNames">Names</label>
             <input
                 type="text"
                 id="inputNames"
-                value="Michael, Tom, Erica, Sarah, James, Olivia, Lucas, Emma, Daniel, Sophia, Benjamin, Isabella, Jacob, Mia, William, Ava"
+                value="Karla, Michelle, Tracy, Annette, Cheri, Pattie, Hazel, Fernanda, Kim, Sue, Cynthia, Kayla, BJ, Carlene, Amber, Erin"
             />
 
             <!-- Input for random spin duration -->
             <label for="minDuration">Min Spin Time (minutes):</label>
-            <input type="number" id="minDuration" min="1" max="5" value="1" />
+            <input
+                type="number"
+                id="minDuration"
+                min="1"
+                max="355"
+                value="5"
+                size="5"
+            />
             <label for="maxDuration">Max Spin Time (minutes):</label>
-            <input type="number" id="maxDuration" min="1" max="5" value="5" />
+            <input
+                type="number"
+                id="maxDuration"
+                min="1"
+                max="360"
+                value="90"
+                size="5"
+            />
 
             <button id="spinButton" onclick="startSpin()">
                 Spin the Wheel
             </button>
+
+            <span id="countdown-timer">0:00</span>
         </div>
 
         <!-- Canvas for the wheel -->
         <canvas id="wheelCanvas" height="1200" width="1200"></canvas>
 
-        <!-- Countdown timer and result display -->
-        <div id="countdown">
-            Time remaining: <span id="countdown-timer">0:00</span>
-        </div>
         <!-- Countdown timer -->
         <div id="result"></div>
         <!-- Display the winner here -->
@@ -133,6 +134,20 @@
             const radius = canvas.width / 2;
             let currentAngle = 0;
             let spinning = false;
+
+            // function resizeCavas() {
+            //     const size =
+            //         Math.min(window.innerWidth, window.innerHeight) - 180;
+            //     canvas.width = size;
+            //     canvas.height = size;
+            //     drawWheel();
+            // }
+            // window.addEventListener("resize", resizeCavas);
+            // window.addEventListener("load", () => {
+            //     resizeCavas();
+            //     drawWheel();
+            // });
+
             // Get the input element
             let namesInput = document.getElementById("inputNames");
             let names = convertInputToArray(namesInput);
@@ -319,21 +334,25 @@
             }
 
             // Function to update the countdown timer
-            function updateCountdown(timeLeft) {
+            function updateCountdown(timeLeft, endTime) {
                 const minutes = Math.floor(timeLeft / 60000);
                 const seconds = Math.floor((timeLeft % 60000) / 1000);
+                // document.getElementById("countdown-timer").textContent =
+                //     `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                let formattedEndTime = endTime.toLocaleTimeString();
                 document.getElementById("countdown-timer").textContent =
-                    `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                    `${formattedEndTime}`;
             }
 
             // Function to start the countdown
-            function startCountdown(duration) {
+            function startCountdown(duration, endtime) {
                 let timeLeft = duration;
                 let updateInterval = 1000;
 
                 countdownInterval = setInterval(() => {
                     timeLeft -= updateInterval; // Decrease time by 1 second
-                    updateCountdown(timeLeft);
+                    updateCountdown(timeLeft, endtime);
+                    // console.log("Time Remaining:", timeLeft);
 
                     if (timeLeft <= 0) {
                         clearInterval(countdownInterval);
@@ -356,15 +375,23 @@
                     parseInt(document.getElementById("minDuration").value) *
                     60 *
                     1000;
+                console.log("Min Minutes", minDuration);
                 const maxDuration =
                     parseInt(document.getElementById("maxDuration").value) *
                     60 *
                     1000;
+                console.log("Max Minutes", maxDuration);
                 spinDuration =
                     Math.floor(
                         Math.random() * (maxDuration - minDuration + 1),
                     ) + minDuration;
-                spinDuration = 30000;
+                console.log("Spin for Minutes", maxDuration);
+
+                // Calculate and log the end time
+                const endTime = new Date(Date.now() + spinDuration);
+                console.log("Spin will end at:", endTime.toLocaleTimeString());
+
+                // spinDuration = 30000;
 
                 // Set the initial state for spinning
                 angularVelocity = 0.009;
@@ -372,7 +399,7 @@
                 startTime = performance.now();
 
                 // Start the countdown for the spin duration
-                startCountdown(spinDuration);
+                startCountdown(spinDuration, endTime);
                 requestAnimationFrame(spin); // Start spinning the wheel
             }
 
