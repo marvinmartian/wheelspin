@@ -92,7 +92,7 @@
                 type="text"
                 id="inputNames"
                 value="Karla, Michelle, Tracy, Annette, Cheri, Pattie, Hazel, Fernanda, Kim, Sue, Cynthia, Kayla, BJ, Carlene, Amber, Erin"
-                size="75"
+                size="65"
             />
 
             <!-- Input for random spin duration -->
@@ -159,6 +159,8 @@
                 resizeCavas();
                 drawWheel();
             });
+
+            canvas.addEventListener("click", startSpin);
 
             // Get the input element
             let namesInput = document.getElementById("inputNames");
