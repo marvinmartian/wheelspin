@@ -134,6 +134,8 @@
             const ctx = canvas.getContext("2d");
             let radius;
             let names;
+            let decelerationRate;
+
             let currentAngle = 0;
             let spinning = false;
 
@@ -175,7 +177,7 @@
 
             let spinDuration;
             let angularVelocity = 0.005; // Slower initial speed
-            let decelerationRate = 0.0000005;
+            // let decelerationRate = 0.0000005;
             let totalElapsedTime = 0;
             let startTime;
             let countdownInterval;
@@ -318,7 +320,8 @@
 
                 // Decelerate gradually
                 if (angularVelocity > 0) {
-                    angularVelocity -= decelerationRate;
+                    // console.log("Start slowing down...");
+                    // angularVelocity -= decelerationRate;
                     currentAngle += angularVelocity;
                 }
 
@@ -402,6 +405,9 @@
 
                 // Set the initial state for spinning
                 angularVelocity = 0.009;
+                decelerationRate = (angularVelocity / spinDuration) * 10;
+
+                console.log("Deceleration Rate:", decelerationRate);
                 spinning = true;
                 startTime = performance.now();
 
