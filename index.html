@@ -133,6 +133,7 @@
             const canvas = document.getElementById("wheelCanvas");
             const ctx = canvas.getContext("2d");
             let radius;
+            let names;
             let currentAngle = 0;
             let spinning = false;
 
@@ -164,7 +165,13 @@
 
             // Get the input element
             let namesInput = document.getElementById("inputNames");
-            let names = convertInputToArray(namesInput);
+            namesInput.addEventListener("input", function (evt) {
+                names = convertInputToArray(this);
+            });
+            // namesInput.addEventListener("change", () => {
+            //     names = convertInputToArray(namesInput);
+            // });
+            names = convertInputToArray(namesInput);
 
             let spinDuration;
             let angularVelocity = 0.005; // Slower initial speed
@@ -366,6 +373,9 @@
                     // ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the previous wheel state
                     // document.getElementById("result").textContent = ""; // Clear the previous winner text
                 }
+
+                let namesInput = document.getElementById("inputNames");
+                names = convertInputToArray(namesInput);
 
                 // Randomize the spin duration
                 const minDuration =
